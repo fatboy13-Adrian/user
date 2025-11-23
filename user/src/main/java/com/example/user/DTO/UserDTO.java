@@ -1,4 +1,4 @@
-package com.example.user;
+package com.example.user.DTO;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,7 +25,7 @@ public class UserDTO {
 
 	//Constructor with all fields
 	public UserDTO(Long userId, String firstName, String lastName, String username, String email, String mobileNo, String address, String postalCode, String password, String userStatus, 
-	Date createdDate, Date suspendDate, Date unsuspendDate, Date terminateDate, Date unterminateDate, Date inactiveDate) {
+			Date createdDate, Date suspendDate, Date unsuspendDate, Date terminateDate, Date unterminateDate, Date inactiveDate) {
 		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -161,11 +161,11 @@ public class UserDTO {
 	public void setUnsuspendDate (Date unsuspendDate) {
 		this.unsuspendDate = unsuspendDate;
 	}
-	
+
 	public void setTerminateDate (Date terminateDate) {
 		this.terminateDate = terminateDate;
 	}
-	
+
 	public void setUnterminateDate (Date unterminateDate) {
 		this.unterminateDate = unterminateDate;
 	}
@@ -312,7 +312,7 @@ public class UserDTO {
 		unsuspendDateCalendar.set(Calendar.SECOND, 0);
 		unsuspendDateCalendar.set(Calendar.MILLISECOND, 0);
 		Date unsuspended = unsuspendDateCalendar.getTime();
-		
+
 		//Check if unsuspend date iis today or after today
 		if (unsuspended.equals(getTodayDate()) || unsuspended.after(getTodayDate())) return unsuspendDate;
 		else return null; //Return null if unsuspend date is not today or after today

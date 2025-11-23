@@ -1,7 +1,7 @@
 package com.example.user.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.example.user.User;
+import com.example.user.Entity.User;
 import java.util.*;
 
 @Repository	//Marks this interface as a repository bean for spring component scanning

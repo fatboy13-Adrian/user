@@ -1,4 +1,6 @@
-package com.example.user;
+package com.example.user.Mapper;
+import com.example.user.DTO.UserDTO;
+import com.example.user.Entity.User;
 
 public class UserMapper {
     /** Convert Entity to DTO */
