@@ -109,67 +109,67 @@ public class User {
 	}
 	
 	//Setters
-	public Long setUserId(Long userId) {
-		return userId;
-	}
-	
-	public String setFirstName(String firstName) {
-		return firstName;
-	}
-	
-	public String setLastName(String lastName) {
-		return lastName;
-	}
-	
-	public String setUsername(String username) {
-		return username;
-	}
-	
-	public String setEmail(String email) {
-		return email;
-	}
-	
-	public String setMobileNo(String mobileNo) {
-		return mobileNo;
-	}
-	
-	public String setAddress (String address) {
-		return address;
-	}
-	
-	public String setPostalCode (String postalCode) {
-		return postalCode;
-	}
-	
-	public String setPassword (String password) {
-		return password;
-	}
-	
-	public String setUserStatus (String userStatus) {
-		return userStatus;
-	}
-	
-	public Date setCreatedDate (Date createdDate) {
-		return createdDate;
-	}
-	
-	public Date setSuspendDate (Date suspendDate) {
-		return suspendDate;
-	}
-	
-	public Date setUnsuspendDate (Date unsuspendDate) {
-		return unsuspendDate;
-	}
-	
-	public Date setTerminateDate (Date terminateDate) {
-		return terminateDate;
-	}
-	
-	public Date setUnterminateDate (Date terminateDate) {
-		return unterminateDate;
-	}
-	
-	public Date setInactiveDate (Date inactiveDate) {
-		return inactiveDate;
-	}
+		public void setUserId(Long userId) {
+			this.userId = userId;
+		}
+
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
+		}
+
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public void setEmail(String email) {
+			this.email = email;
+		}
+
+		public void setMobileNo(String mobileNo) {
+			this.mobileNo = mobileNo;
+		}
+
+		public void setAddress (String address) {
+			this.address = address;
+		}
+
+		public void setPostalCode (String postalCode) {
+			this.postalCode = postalCode;
+		}
+
+		public void setPassword (String password) {
+			this.password = password;
+		}
+
+		public void setUserStatus (String userStatus) {
+			this.userStatus = userStatus;
+		}
+
+		public void setCreatedDate (Date createdDate) {
+			this.createdDate = createdDate;
+		}
+
+		public void setSuspendDate (Date suspendDate) {
+			this.suspendDate = suspendDate;
+		}
+
+		public void setUnsuspendDate (Date unsuspendDate) {
+			this.unsuspendDate = unsuspendDate;
+		}
+		
+		public void setTerminateDate (Date terminateDate) {
+			this.terminateDate = terminateDate;
+		}
+		
+		public void setUnterminateDate (Date unterminateDate) {
+			this.unterminateDate = unterminateDate;
+		}
+
+		public void setInactiveDate (Date inactiveDate) {
+			this.inactiveDate = inactiveDate;
+		}
 }

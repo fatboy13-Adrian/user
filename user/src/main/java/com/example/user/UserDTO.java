@@ -110,60 +110,72 @@ public class UserDTO {
 	}
 
 	//Setters
-	public Long setUserId(Long userId) {
-		return userId;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
-	public String setFirstName(String firstName) {
-		return firstName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String setLastName(String lastName) {
-		return lastName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
-	public String setUsername(String username) {
-		return username;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public String setEmail(String email) {
-		return email;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public String setMobileNo(String mobileNo) {
-		return mobileNo;
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
 	}
 
-	public String setAddress (String address) {
-		return address;
+	public void setAddress (String address) {
+		this.address = address;
 	}
 
-	public String setPostalCode (String postalCode) {
-		return postalCode;
+	public void setPostalCode (String postalCode) {
+		this.postalCode = postalCode;
 	}
 
-	public String setPassword (String password) {
-		return password;
+	public void setPassword (String password) {
+		this.password = password;
 	}
 
-	public String setUserStatus (String userStatus) {
-		return userStatus;
+	public void setUserStatus (String userStatus) {
+		this.userStatus = userStatus;
 	}
 
-	public Date setCreatedDate (Date createdDate) {
-		return createdDate;
+	public void setCreatedDate (Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
-	public Date setSuspendDate (Date suspendDate) {
-		return suspendDate;
+	public void setSuspendDate (Date suspendDate) {
+		this.suspendDate = suspendDate;
 	}
 
-	public Date setUnsuspendDate (Date unsuspendDate) {
-		return unsuspendDate;
+	public void setUnsuspendDate (Date unsuspendDate) {
+		this.unsuspendDate = unsuspendDate;
+	}
+	
+	public void setTerminateDate (Date terminateDate) {
+		this.terminateDate = terminateDate;
+	}
+	
+	public void setUnterminateDate (Date unterminateDate) {
+		this.unterminateDate = unterminateDate;
 	}
 
-	public Date inactiveDate (Date inactiveDate) {
-		return inactiveDate;
+	public void setInactiveDate (Date inactiveDate) {
+		this.inactiveDate = inactiveDate;
+	}
+
+	public void inactiveDate (Date inactiveDate) {
+		this.inactiveDate = inactiveDate;
 	}
 
 	/**
