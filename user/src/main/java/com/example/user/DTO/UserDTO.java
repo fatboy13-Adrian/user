@@ -1,11 +1,14 @@
 package com.example.user.DTO;
 import java.util.Calendar;
 import java.util.Date;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * User Data Transfer Object (DTO) for transferring user data.
  * Includes basic manual validation for required fields and password complexity.
  */
+@CrossOrigin(origins = "http://localhost:3000") //Allows cross-origin requests from the React frontend
 public class UserDTO {
 	//User fields in the DB
 	private Long userId;
@@ -143,7 +146,8 @@ public class UserDTO {
 	}
 
 	public void setPassword (String password) {
-		this.password = password;
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		this.password = passwordEncoder.encode(password);	//Store hashed password into DB
 	}
 
 	public void setUserStatus (String userStatus) {

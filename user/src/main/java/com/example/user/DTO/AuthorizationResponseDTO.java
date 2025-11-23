@@ -1,24 +1,19 @@
-package com.example.user.Entity;
+package com.example.user.DTO;
 
-public class ForgotLoginCredential {
+public class AuthorizationResponseDTO {
 	//User attributes
-	private String email, username, password;
+	private String username, password;
 
 	//No argument constructor
-	public ForgotLoginCredential() {}
+	public AuthorizationResponseDTO() {}
 
 	//Constructor with all fields
-	public ForgotLoginCredential(String email, String username, String password) {
-		this.email = email;
+	public AuthorizationResponseDTO(String username, String password) {
 		this.username = username;
 		this.password = password;
 	}
 
 	//Getters
-	public String getEmail() {
-		return email;
-	}
-	
 	public String getUsername() {
 		return username;
 	}
@@ -28,10 +23,6 @@ public class ForgotLoginCredential {
 	}
 
 	//Setters
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
 	public void setUsername(String username) {
 		this.username = username;
 	}
