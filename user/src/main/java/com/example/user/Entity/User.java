@@ -146,6 +146,11 @@ public class User {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		this.password = passwordEncoder.encode(password);	//Store hashed password into DB
 	}
+	
+	public boolean checkPassword(String password) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		return passwordEncoder.matches(password, this.password);	//Check raw passsword against hashed password
+	}
 
 	public void setUserStatus (String userStatus) {
 		this.userStatus = userStatus;

@@ -146,8 +146,7 @@ public class UserDTO {
 	}
 
 	public void setPassword (String password) {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		this.password = passwordEncoder.encode(password);	//Store hashed password into DB
+		this.password = password;
 	}
 
 	public void setUserStatus (String userStatus) {
