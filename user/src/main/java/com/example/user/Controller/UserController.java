@@ -3,6 +3,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.user.DTO.UserDTO;
+import com.example.user.SecurityUtil.SecurityUtil;
 import com.example.user.Service.UserService;
 
 @RestController             //Marks the class as a REST controller
@@ -20,50 +22,61 @@ import com.example.user.Service.UserService;
 public class UserController {
 	@Autowired
 	private UserService userService;	//Inject user service for user operations
-	
+
+	//Declare class level variables for logged in user ID and role
+	private Long loggedInUserId;
+	private String role;
+
 	@PostMapping("/login") 
 	public ResponseEntity <UserDTO> userLogin(@RequestParam String username, @RequestParam String password) {
 		UserDTO userDTO = userService.userLogin(username, password);
-		
+
 		if (userDTO != null) {
 			return ResponseEntity.ok(userDTO);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 	}
-	
+
 	@PostMapping("/create")
 	public ResponseEntity <UserDTO> createNewUser(@RequestBody UserDTO userDTO) {
 		UserDTO createdUser = userService.createNewUser(userDTO);
 		return ResponseEntity.ok(createdUser);
 	}
-	
+
 	@GetMapping("/userId")
-	public ResponseEntity <UserDTO> getUser(@PathVariable Long userId) {
-		UserDTO userID = userService.getUser(userId);
-		return ResponseEntity.ok(userID);
+	public ResponseEntity <UserDTO> getUser(@PathVariable Long userId, Authentication authentication) {
+		loggedInUserId = SecurityUtil.getLoggedInUserId(authentication);
+		role = SecurityUtil.getLoggedInUserRole(authentication);
+		UserDTO userDTO = userService.getUser(userId, loggedInUserId, role);
+		return ResponseEntity.ok(userDTO);
 	}
-	
+
 	@GetMapping
-	public ResponseEntity <ArrayList<UserDTO>> getAllUsers() {
-		ArrayList <UserDTO> users = userService.getAllUsers();
+	public ResponseEntity <ArrayList<UserDTO>> getAllUsers(Authentication authentication) {
+		role = SecurityUtil.getLoggedInUserRole(authentication);
+		ArrayList <UserDTO> users = userService.getAllUsers(role);
 		return ResponseEntity.ok(users);
 	}
-	
+
 	@PatchMapping("/userId")
-	public ResponseEntity <UserDTO> updateUser (@RequestBody UserDTO userDTO, @PathVariable Long userId) {
-		UserDTO updatedUser = userService.updateUser(userDTO, userId);
-		
+	public ResponseEntity <UserDTO> updateUser (@RequestBody UserDTO userDTO, @PathVariable Long userId, Authentication authentication) {
+		loggedInUserId = SecurityUtil.getLoggedInUserId(authentication);
+		role = SecurityUtil.getLoggedInUserRole(authentication);
+		UserDTO updatedUser = userService.updateUser(userDTO, userId, loggedInUserId, role);
+
 		if (updatedUser != null) {
 			return ResponseEntity.ok(updatedUser);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
-	
+
 	@DeleteMapping("/userId")
-	public ResponseEntity <String> deleteUser (@PathVariable Long userId) {
-		userService.deleteUser(userId);
-		return ResponseEntity.ok("User deleted successfully");
+	public ResponseEntity <String> deleteUser (@PathVariable Long userId, Authentication authentication) {
+		loggedInUserId = SecurityUtil.getLoggedInUserId(authentication);
+		role = SecurityUtil.getLoggedInUserRole(authentication);
+		userService.deleteUser(userId, loggedInUserId, role);
+		return ResponseEntity.ok("User account deleted successfully");
 	}
 }
