@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class UserDTO {
 	//User fields in the DB
 	private Long userId;
-	private String firstName, lastName, username, email, mobileNo, address, postalCode, password, userStatus;
+	private String firstName, lastName, username, email, mobileNo, address, postalCode, password, userStatus, role;
 
 	//Special characters allowed for the password string
 	private String specialCharacter = "!@#$%^&*()-_=+[]{}|;:'\",.<>/?`~";
 
 	//Date attributes
-	private Date createdDate, suspendDate, unsuspendDate, terminateDate, unterminateDate, inactiveDate;
+	private Date createdDate, suspensionDate, unsuspensionDate, terminationDate, unterminationDate, inactiveDate;
 
 	//No argument constructor
 	public UserDTO() {
@@ -26,8 +26,8 @@ public class UserDTO {
 	}
 
 	//Constructor with all fields
-	public UserDTO(Long userId, String firstName, String lastName, String username, String email, String mobileNo, String address, String postalCode, String password, String userStatus, 
-			Date createdDate, Date suspendDate, Date unsuspendDate, Date terminateDate, Date unterminateDate, Date inactiveDate) {
+	public UserDTO(Long userId, String firstName, String lastName, String username, String email, String mobileNo, String address, String postalCode, String password, String role, String userStatus, 
+	Date createdDate, Date suspensionDate, Date unsuspensionDate, Date terminationDate, Date unterminationDate, Date inactiveDate) {
 		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -37,12 +37,13 @@ public class UserDTO {
 		this.address = address;
 		this.postalCode = postalCode;
 		this.password = password;
+		this.role = role;
 		this.userStatus = "Active";
 		this.createdDate = getTodayDate();
-		this.suspendDate = suspendDate;
-		this.unsuspendDate = unsuspendDate;
-		this.terminateDate = terminateDate;
-		this.unterminateDate = unterminateDate;
+		this.suspensionDate = suspensionDate;
+		this.unsuspensionDate = unsuspensionDate;
+		this.terminationDate = terminationDate;
+		this.unterminationDate = unterminationDate;
 		this.inactiveDate = inactiveDate;
 	}
 
@@ -82,6 +83,10 @@ public class UserDTO {
 	public String getPassword () {
 		return password;
 	}
+	
+	public String getRole () {
+		return role;
+	}
 
 	public String getUserStatus () {
 		return userStatus;
@@ -91,20 +96,20 @@ public class UserDTO {
 		return createdDate;
 	}
 
-	public Date getSuspendDate () {
-		return suspendDate;
+	public Date getSuspensionDate () {
+		return suspensionDate;
 	}
 
-	public Date getUnsuspendDate () {
-		return unsuspendDate;
+	public Date getUnsuspensionDate () {
+		return unsuspensionDate;
 	}
 
-	public Date getTerminateDate () {
-		return terminateDate;
+	public Date getTerminationDate () {
+		return terminationDate;
 	}
 
-	public Date getUnterminateDate () {
-		return unterminateDate;
+	public Date getUnterminationDate () {
+		return unterminationDate;
 	}
 
 	public Date getInactiveDate () {
@@ -147,6 +152,10 @@ public class UserDTO {
 	public void setPassword (String password) {
 		this.password = password;
 	}
+	
+	public void setRole (String role) {
+		this.role = role;
+	}
 
 	public void setUserStatus (String userStatus) {
 		this.userStatus = userStatus;
@@ -156,20 +165,20 @@ public class UserDTO {
 		this.createdDate = createdDate;
 	}
 
-	public void setSuspendDate (Date suspendDate) {
-		this.suspendDate = suspendDate;
+	public void setSuspensionDate (Date suspensionDate) {
+		this.suspensionDate = suspensionDate;
 	}
 
-	public void setUnsuspendDate (Date unsuspendDate) {
-		this.unsuspendDate = unsuspendDate;
+	public void setUnsuspensionDate (Date unsuspensionDate) {
+		this.unsuspensionDate = unsuspensionDate;
 	}
 
-	public void setTerminateDate (Date terminateDate) {
-		this.terminateDate = terminateDate;
+	public void setTerminationDate (Date terminationDate) {
+		this.terminationDate = terminationDate;
 	}
 
-	public void setUnterminateDate (Date unterminateDate) {
-		this.unterminateDate = unterminateDate;
+	public void setUnterminationDate (Date unterminationDate) {
+		this.unterminationDate = unterminationDate;
 	}
 
 	public void setInactiveDate (Date inactiveDate) {
@@ -205,12 +214,16 @@ public class UserDTO {
 		if (passwordError != null) return passwordError;
 
 		//Validate suspend date
-		Date suspendDateError = validateSuspendDateIsTodayOrAfterToday(suspendDate);
-		if (suspendDateError == null) return "Suspend date must be today or a future date";
+		Date suspenionDaDateError = validateSuspensionDateIsTodayOrAfterToday(suspensionDate);
+		if (suspenionDaDateError == null) {
+			return "Suspend date must be today or a future date";
+		}
 
 		//Validate unsuspend date
-		Date unsuspendDateError = validateUnsuspendDateIsTodayOrAfterToday(unsuspendDate);
-		if (unsuspendDateError == null) return "Unsuspend date must be today or after today's date";
+		Date unsuspensionDateError = validateUnsuspensionDateIsTodayOrAfterToday(unsuspensionDate);
+		if (unsuspensionDateError == null) {
+			return "Unsuspend date must be today or after today's date";
+		}
 
 		return null;	//User object is valid
 	}
@@ -227,11 +240,11 @@ public class UserDTO {
 	 *  2nd priority: suspension / unsuspension 
 	 *  last priority: active / inactive */
 	private String validateUserStatus (String userStatus) {
-		if (terminateDate != null) return "Terminated";
-		if (terminateDate != null && unterminateDate != null) return "Pending termination";
+		if (terminationDate != null) return "Terminated";
+		if (terminationDate != null && unterminationDate != null) return "Pending termination";
 		if (inactiveDate != null) return "Inactive";
-		if (suspendDate != null) return "Suspended";
-		if (suspendDate != null && unsuspendDate != null) return "Pending suspension";
+		if (suspensionDate != null) return "Suspended";
+		if (suspensionDate != null && unsuspensionDate != null) return "Pending suspension";
 
 		return "Active";	//Return user status as active by default
 	}
@@ -301,62 +314,73 @@ public class UserDTO {
 	}
 
 	/** Validate if suspend date is today or after today **/
-	public Date validateSuspendDateIsTodayOrAfterToday (Date suspendDate) {
+	public Date validateSuspensionDateIsTodayOrAfterToday (Date suspensionDate) {
 		//Get suspend date without time
-		Calendar suspendDateCalendar = Calendar.getInstance();
-		suspendDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
-		suspendDateCalendar.set(Calendar.MINUTE, 0);
-		suspendDateCalendar.set(Calendar.SECOND, 0);
-		suspendDateCalendar.set(Calendar.MILLISECOND, 0);
-		Date suspended = suspendDateCalendar.getTime();
+		Calendar suspensionDateCalendar = Calendar.getInstance();
+		suspensionDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
+		suspensionDateCalendar.set(Calendar.MINUTE, 0);
+		suspensionDateCalendar.set(Calendar.SECOND, 0);
+		suspensionDateCalendar.set(Calendar.MILLISECOND, 0);
+		Date suspended = suspensionDateCalendar.getTime();
 
 		//Check if suspend date is today or after today
-		if (suspended.equals(getTodayDate()) || suspended.after(getTodayDate())) return suspendDate;
-		else return null;	//Return null if suspend date is not today or after today
+		if (suspended.equals(getTodayDate()) || suspended.after(getTodayDate())) {
+			return suspensionDate;
+		} else {
+			return null;	//Return null if suspend date is not today or after today
+		}
 	}
 
 	/** Validate if unsuspend date is today or after today **/
-	public Date validateUnsuspendDateIsTodayOrAfterToday (Date unsuspendDate) {
+	public Date validateUnsuspensionDateIsTodayOrAfterToday (Date unsuspensionDate) {
 		//Get unsuspend date without time
-		Calendar unsuspendDateCalendar = Calendar.getInstance();
-		unsuspendDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
-		unsuspendDateCalendar.set(Calendar.MINUTE, 0);
-		unsuspendDateCalendar.set(Calendar.SECOND, 0);
-		unsuspendDateCalendar.set(Calendar.MILLISECOND, 0);
-		Date unsuspended = unsuspendDateCalendar.getTime();
+		Calendar unsuspensionDateCalendar = Calendar.getInstance();
+		unsuspensionDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
+		unsuspensionDateCalendar.set(Calendar.MINUTE, 0);
+		unsuspensionDateCalendar.set(Calendar.SECOND, 0);
+		unsuspensionDateCalendar.set(Calendar.MILLISECOND, 0);
+		Date unsuspended = unsuspensionDateCalendar.getTime();
 
 		//Check if unsuspend date iis today or after today
-		if (unsuspended.equals(getTodayDate()) || unsuspended.after(getTodayDate())) return unsuspendDate;
-		else return null; //Return null if unsuspend date is not today or after today
+		if (unsuspended.equals(getTodayDate()) || unsuspended.after(getTodayDate())) {
+			return unsuspensionDate;
+		} else {
+			return null; //Return null if unsuspend date is not today or after today
+		}
 	}
 
-	/** Validate if terminate date is today or after today **/
-	public Date validateTerminateDateIsTodayOrAfterToday(Date terminateDate) {
-		//Get termiante date without time
-		Calendar terminateDateCalendar = Calendar.getInstance();
-		terminateDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
-		terminateDateCalendar.set(Calendar.MINUTE, 0);
-		terminateDateCalendar.set(Calendar.SECOND, 0);
-		terminateDateCalendar.set(Calendar.MILLISECOND, 0);
-		Date terminated = terminateDateCalendar.getTime();
+	/** Validate if termination date is today or after today **/
+	public Date validateTerminationDateIsTodayOrAfterToday(Date terminationDate) {
+		Calendar terminationDateCalendar = Calendar.getInstance();
+		terminationDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
+		terminationDateCalendar.set(Calendar.MINUTE, 0);
+		terminationDateCalendar.set(Calendar.SECOND, 0);
+		terminationDateCalendar.set(Calendar.MILLISECOND, 0);
+		Date terminated = terminationDateCalendar.getTime();
 
 		//Check if terminate date is today or after today
-		if (terminated.equals(getTodayDate()) || terminated.after(getTodayDate())) return terminateDate;
-		else return null;
+		if (terminated.equals(getTodayDate()) || terminated.after(getTodayDate())) {
+			return terminationDate;
+		} else {
+			return null;
+		}
 	}
 
-	/** Validate if unterminate date is today or after today **/
-	public Date validateUntermianteDateIsTodayOrAfterToday(Date unterminateDate) {
-		//Get termiante date without time
-		Calendar unterminateDateCalendar = Calendar.getInstance();
-		unterminateDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
-		unterminateDateCalendar.set(Calendar.MINUTE, 0);
-		unterminateDateCalendar.set(Calendar.SECOND, 0);
-		unterminateDateCalendar.set(Calendar.MILLISECOND, 0);
-		Date unterminated = unterminateDateCalendar.getTime();
+	/** Validate if untermination date is today or after today **/
+	public Date validateUnterminationDateIsTodayOrAfterToday(Date unterminationDate) {
+		Calendar unterminationDateCalendar = Calendar.getInstance();
+		unterminationDateCalendar.set(Calendar.HOUR_OF_DAY, 0);
+		unterminationDateCalendar.set(Calendar.MINUTE, 0);
+		unterminationDateCalendar.set(Calendar.SECOND, 0);
+		unterminationDateCalendar.set(Calendar.MILLISECOND, 0);
+		Date unterminated = unterminationDateCalendar.getTime();
 
-		//Check if unterminate date is today or after today
-		if (unterminated.equals(getTodayDate()) || unterminated.after(getTodayDate())) return unterminateDate;
-		else return null;
+		//Check if untermination date is today or after today
+		if (unterminated.equals(getTodayDate()) || unterminated.after(getTodayDate())) {
+			return unterminationDate;
+		}
+		else {
+			return null;
+		}
 	}
 }

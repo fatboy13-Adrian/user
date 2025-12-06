@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.user.DTO.UserDTO;
-import com.example.user.Exception.UserIdNotFoundException;
 import com.example.user.Service.UserService;
 
 @RestController             //Marks the class as a REST controller

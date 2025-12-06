@@ -5,12 +5,15 @@ import com.example.user.Entity.User;
 public class UserMapper {
     /** Convert Entity to DTO */
     public static UserDTO toDTO(User user) {
-        if (user == null) return null;	//Return null if user entity is null
+        if (user == null) {
+        	return null;	//Return null if user entity is null
+        }
         
         //Create and return a new user DTO populated with entity fields
-        return new UserDTO(user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(),
-        user.getMobileNo(), user.getAddress(), user.getPostalCode(), user.getPassword(), user.getUserStatus(), user.getCreatedDate(),
-        user.getSuspendDate(), user.getUnsuspendDate(), user.getTerminateDate(), user.getUnterminateDate(), user.getInactiveDate());
+        return new UserDTO(user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), 
+        user.getMobileNo(), user.getAddress(), user.getPostalCode(), user.getPassword(), user.getRole(), user.getUserStatus(), 
+        user.getCreatedDate(), user.getSuspensionDate(), user.getUnsuspensionDate(), user.getTerminationDate(), user.getUnterminationDate(), 
+        user.getInactiveDate());
     }
 
     /** Convert DTO to Entity */
@@ -30,11 +33,12 @@ public class UserMapper {
         user.setPassword(userDTO.getPassword());
         user.setUserStatus(userDTO.getUserStatus());
         user.setCreatedDate(userDTO.getCreatedDate());
-        user.setSuspendDate(userDTO.getSuspendDate());
-        user.setUnsuspendDate(userDTO.getUnsuspendDate());
-        user.setTerminateDate(userDTO.getTerminateDate());
-        user.setUnterminateDate(userDTO.getUnterminateDate());
+        user.setSuspensionDate(userDTO.getSuspensionDate());
+        user.setUnsuspensionDate(userDTO.getUnsuspensionDate());
+        user.setTerminationDate(userDTO.getTerminationDate());
+        user.setUnterminationDate(userDTO.getUnterminationDate());
         user.setInactiveDate(userDTO.getInactiveDate());
+        user.setRole(userDTO.getRole());
         return user;	//Return populated user entity
     }
 }
