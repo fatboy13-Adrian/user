@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 /**
  * User Data Transfer Object (DTO) for transferring user data.
  * Includes basic manual validation for required fields and password complexity.
+ * New user can only fill in their first / last / user names, email, mobile number, address, postal code, password and their role (only can do it once).
+ * Only admin user can update all fields in the DB through a Java Swing GUI.
  */
 @CrossOrigin(origins = "http://localhost:3000") //Allows cross-origin requests from the React frontend
 public class UserDTO {
