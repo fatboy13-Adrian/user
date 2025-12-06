@@ -2,7 +2,6 @@ package com.example.user.DTO;
 import java.util.Calendar;
 import java.util.Date;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * User Data Transfer Object (DTO) for transferring user data.
@@ -189,10 +188,13 @@ public class UserDTO {
 		//All fields cannot be null
 		if (firstName == null) return "First name is required";
 		if (lastName == null) return "Last name is required";
-		if (email == null) return "Email address is required";
 		if (mobileNo == null) return "Mobile number is requried";
 		if (address == null) return "Address is required";
 		if (postalCode == null) return "Postal code is required";
+		
+		//Validate email address
+		String emailError = validateEmailAddress(email);
+		if (emailError != null) return emailError;
 
 		//Validate user status
 		String userStatusError = validateUserStatus(userStatus);	
@@ -212,6 +214,13 @@ public class UserDTO {
 
 		return null;	//User object is valid
 	}
+	
+	/** Validate email address */
+	private String validateEmailAddress (String email) {
+		if (email == null) return "Email address is required";
+		if (!email.contains("@")) return "Please provide a valid email address";
+		return null;
+	}
 
 	/** Determine user status based on  date fields 
 	 *  Highest priority: termination / untermination 
@@ -228,7 +237,7 @@ public class UserDTO {
 	}
 
 	/** Validates password complexity */
-	private String validatePassword(String password) {
+	public String validatePassword(String password) {
 		if (password == null) return "Password is required";
 		if (password.length() < 8) return "Password must be at least 8 characters long";
 		if (!passwordContainsAlphabet(password)) return "Password must contain at least 1 alphabet";

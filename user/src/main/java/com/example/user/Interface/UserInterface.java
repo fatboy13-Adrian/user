@@ -1,6 +1,5 @@
 package com.example.user.Interface;
 import java.util.*;
-
 import com.example.user.DTO.UserDTO;
 
 public interface UserInterface {
@@ -8,6 +7,6 @@ public interface UserInterface {
 	UserDTO createNewUser(UserDTO userDTO);
 	UserDTO getUser(Long userId);
 	ArrayList <UserDTO> getAllUsers();
-	UserDTO updateUser();
-	void deleteUser();
+	UserDTO updateUser(UserDTO userDTO, Long userId);
+	void deleteUser(Long userId);
 }
