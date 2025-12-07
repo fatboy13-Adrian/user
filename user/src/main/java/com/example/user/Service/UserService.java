@@ -20,7 +20,7 @@ public class UserService implements UserInterface {
 	public UserDTO userLogin(String username, String password) {
 		Optional <User> userName = userRepository.findByUsername(username);	//Fetch username from DB
 
-		//Check if username is empty and return null if it is
+		//Return null if username field is empty
 		if (userName.isEmpty()) {
 			return null;
 		}
@@ -28,7 +28,7 @@ public class UserService implements UserInterface {
 		User user = userName.get();	//If username is present, returns the value, otherwise throws NoSuchElementException.
 
 
-		//If raw password is correct, it will convert entity to DTO and return the value
+		//Convert entity to DTO and returns the value if password is correct
 		if (user.checkPassword(password)) {
 			return UserMapper.toDTO(user);
 		}
@@ -38,17 +38,17 @@ public class UserService implements UserInterface {
 
 	@Override
 	public UserDTO createNewUser(UserDTO userDTO) {
-		//Check if username already exists in the DB
+		//Throw an exception if username already exists in the DB
 		if (userRepository.existsByUsername(userDTO.getUsername())) {
 			throw new UsernameAlreadyExistsException(userDTO.getUsername());
 		}
 
-		//Check if email already exists in the DB
+		//Throw an exception if email already exists in DB
 		if (userRepository.existsByEmail(userDTO.getEmail())) {
 			throw new EmailAlreadyExistsException(userDTO.getEmail());
 		}
 
-		//Check if mobile number already exists in the DB
+		//Throw an exception if mobile number already exists in the DB
 		if (userRepository.existsByMobileNo(userDTO.getMobileNo())) {
 			throw new MobileNumberAlreadyExistsException(userDTO.getMobileNo());
 		}
@@ -62,17 +62,17 @@ public class UserService implements UserInterface {
 	public UserDTO getUser(Long requestedUserId, Long loggedInUserId, String role) {
 		//Only admin role can access to any user accounts
 		if (!role.equals("Admin")) {
-			//Check if requested user ID is not logged in user ID
+			//Throw an unauthorized access exception if user's role is not admin or user ID is not the logged in user ID
 			if (!requestedUserId.equals(loggedInUserId)) {
-				//Throw an unauthorized access exception if user ID is not equals to login user ID or role is not admin
 				throw new UnauthorizedAccessException("You can only view your own user account!");
 			}
 		}
 
-		Optional<User> userOpt = userRepository.findById(requestedUserId);	//Fetch user from DB
+		Optional<User> userID = userRepository.findById(requestedUserId);	//Fetch user from DB
 
-		if (userOpt.isPresent()) {
-			return UserMapper.toDTO(userOpt.get());
+		//Convert entity to DTO if user ID is present
+		if (userID.isPresent()) {
+			return UserMapper.toDTO(userID.get());
 		}
 
 		return null; //Return null if user not found
@@ -81,15 +81,17 @@ public class UserService implements UserInterface {
 
 	@Override
 	public ArrayList <UserDTO> getAllUsers(String role) {
+		//Throw an unauthorized access exception if user ID is not equals to login user ID or role is not admin
 		if (!"Admin".equalsIgnoreCase(role)) {
-			//Throw an unauthorized access exception if user ID is not equals to login user ID or role is not admin
 			throw new UnauthorizedAccessException("Only admin users can view all user accounts!");
 		}
 
-		ArrayList <User> users = new ArrayList <>(userRepository.findAll());	//Returns all instances of the type users
-		ArrayList <UserDTO> userDtos = new ArrayList <>();						//Construct empty array list
+		//Array lists to return all instances of user type and construct an empty array list for user dtos
+		ArrayList <User> users = new ArrayList <>(userRepository.findAll());	
+		ArrayList <UserDTO> userDtos = new ArrayList <>();
 
-		for (int i = 0; i <= users.size(); i++) {
+		//Loop through the user list entity 1 by 1
+		for (int i = 0; i < users.size(); i++) {
 			UserDTO userDto = UserMapper.toDTO(users.get(i));	//Convert entity to DTO
 			userDtos.add(userDto);								//Add specific element to end of the list
 		}
@@ -99,7 +101,7 @@ public class UserService implements UserInterface {
 
 	@Override
 	public UserDTO updateUser(UserDTO userDTO, Long userId, Long loggedInUserId, String role) {
-		Optional <User> userID = userRepository.findById(userId);
+		Optional <User> userID = userRepository.findById(userId);	//Retrieve user entity by user ID
 
 		//Verify if user ID is present in the DB
 		if (userID.isEmpty()) {
@@ -108,9 +110,8 @@ public class UserService implements UserInterface {
 
 		User user = userID.get();	//Returns the value of user ID if it exists in the DB, otherwise throws NoSuchElementException
 
-		//User can only update their own profile
+		//Throw an unauthorized access exception if user ID is not equals to login user ID or role is not admin
 		if (!userId.equals(loggedInUserId) && !"Admin".equalsIgnoreCase(role)) {
-			//Throw an unauthorized access exception if user ID is not equals to login user ID or role is not admin
 			throw new UnauthorizedAccessException("You can only update your own user account!");
 		}
 
@@ -178,20 +179,21 @@ public class UserService implements UserInterface {
 			}
 		}
 
-		userRepository.save(user);
-		return UserMapper.toDTO(user);
+		userRepository.save(user);		//Save user entity into DB
+		return UserMapper.toDTO(user);	//Convert entity to DTO
 	}
 
 	@Override
 	public void deleteUser(Long userId, Long loggedInUserId, String role) {
 		Optional <User> userID = userRepository.findById(userId);	//Retrieve user entity by user ID
 
+		//Throw an user ID not found exception if user ID is not present in DB
 		if (userID.isEmpty()) {
-			throw new UserIdNotFoundException(userId);				//Throw an user ID not found exception if user ID is not present in DB
+			throw new UserIdNotFoundException(userId);				
 		}
 
+		//Throw an unauthorized access exception if user ID is not equals to login user ID or role is not admin
 		if (!"Admin".equalsIgnoreCase(role) && !userId.equals(loggedInUserId)) {
-			//Throw an unauthorized access exception if user ID is not equals to login user ID or role is not admin
 			throw new UnauthorizedAccessException("You can only delete your own user account!");
 		}
 

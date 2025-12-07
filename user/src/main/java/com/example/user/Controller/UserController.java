@@ -31,11 +31,13 @@ public class UserController {
 	public ResponseEntity <UserDTO> userLogin(@RequestParam String username, @RequestParam String password) {
 		UserDTO userDTO = userService.userLogin(username, password);
 
+		//If login successful, return user data with HTTP 200
 		if (userDTO != null) {
 			return ResponseEntity.ok(userDTO);
-		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
+		} 
+		
+		//Otherwise return HTTP 401 Unauthorized
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
 
 	@PostMapping("/create")
@@ -46,36 +48,46 @@ public class UserController {
 
 	@GetMapping("/userId")
 	public ResponseEntity <UserDTO> getUser(@PathVariable Long userId, Authentication authentication) {
+		//Extract logged-in user's ID and role from Spring Security
 		loggedInUserId = SecurityUtil.getLoggedInUserId(authentication);
 		role = SecurityUtil.getLoggedInUserRole(authentication);
+		
+		//Call service method with authorization logic
 		UserDTO userDTO = userService.getUser(userId, loggedInUserId, role);
 		return ResponseEntity.ok(userDTO);
 	}
 
 	@GetMapping
 	public ResponseEntity <ArrayList<UserDTO>> getAllUsers(Authentication authentication) {
-		role = SecurityUtil.getLoggedInUserRole(authentication);
-		ArrayList <UserDTO> users = userService.getAllUsers(role);
+		role = SecurityUtil.getLoggedInUserRole(authentication);	//Retrieve logged-in user's role
+		ArrayList <UserDTO> users = userService.getAllUsers(role);	//Admin-only access enforced inside UserService
 		return ResponseEntity.ok(users);
 	}
 
 	@PatchMapping("/userId")
 	public ResponseEntity <UserDTO> updateUser (@RequestBody UserDTO userDTO, @PathVariable Long userId, Authentication authentication) {
+		//Get logged-in user's ID and role
 		loggedInUserId = SecurityUtil.getLoggedInUserId(authentication);
 		role = SecurityUtil.getLoggedInUserRole(authentication);
+		
+		//Perform update logic
 		UserDTO updatedUser = userService.updateUser(userDTO, userId, loggedInUserId, role);
 
 		if (updatedUser != null) {
 			return ResponseEntity.ok(updatedUser);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		} 
+		
+		//If userId not found
+		return ResponseEntity.notFound().build();
 	}
 
 	@DeleteMapping("/userId")
 	public ResponseEntity <String> deleteUser (@PathVariable Long userId, Authentication authentication) {
+		//Get logged-in user's information
 		loggedInUserId = SecurityUtil.getLoggedInUserId(authentication);
 		role = SecurityUtil.getLoggedInUserRole(authentication);
+		
+		//Perform delete operation with security checks
 		userService.deleteUser(userId, loggedInUserId, role);
 		return ResponseEntity.ok("User account deleted successfully");
 	}
