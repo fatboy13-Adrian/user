@@ -1,0 +1,35 @@
+package com.app.expense.dto;
+import java.math.BigDecimal;
+import java.time.YearMonth;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MonthlyDTO {
+    private YearMonth month;
+    private BigDecimal income = BigDecimal.ZERO;
+    private BigDecimal emergency = BigDecimal.ZERO;
+    private BigDecimal srs = BigDecimal.ZERO;
+    private BigDecimal ssb = BigDecimal.ZERO;
+    private BigDecimal debt = BigDecimal.ZERO;
+    private BigDecimal insurances = BigDecimal.ZERO;
+    private BigDecimal bills = BigDecimal.ZERO;
+    private BigDecimal tax = BigDecimal.ZERO;
+    private BigDecimal parentsAllowances = BigDecimal.ZERO;
+    private BigDecimal transport = BigDecimal.ZERO;
+    private BigDecimal food = BigDecimal.ZERO;
+    private BigDecimal groceries = BigDecimal.ZERO;
+    private BigDecimal haircut = BigDecimal.ZERO;
+    private BigDecimal household = BigDecimal.ZERO;
+    private BigDecimal medical = BigDecimal.ZERO;
+    private BigDecimal wants = BigDecimal.ZERO;
+    private BigDecimal others = BigDecimal.ZERO;
+    private BigDecimal tithes = BigDecimal.ZERO;
+    private BigDecimal overspent = BigDecimal.ZERO;
+    private BigDecimal available = BigDecimal.ZERO;
+}
