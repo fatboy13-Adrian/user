@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/expenses")
+@RequestMapping("/monthly")
 @CrossOrigin(origins = "http://localhost:3000")
 @Tag(name = "Monthly Expenses", description = "Endpoints for viewing monthly expenses")
 public class MonthlyController {
