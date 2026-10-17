@@ -28,8 +28,8 @@ public class ExpenseDTO {
     private BigDecimal termProtector = BigDecimal.ZERO;
 
     //Bills
-    private BigDecimal internet = BigDecimal.ZERO;
     private BigDecimal electricity = BigDecimal.ZERO;
+    private BigDecimal internet = BigDecimal.ZERO;
     private BigDecimal mobile = BigDecimal.ZERO;
     private BigDecimal mortgage = BigDecimal.ZERO;
 

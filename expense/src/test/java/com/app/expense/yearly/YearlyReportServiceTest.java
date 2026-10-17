@@ -37,7 +37,7 @@ public class YearlyReportServiceTest {
         dto.setYear(2026);
         dto.setIncome(BigDecimal
         .valueOf(5000.00));
-        dto.setSavings(BigDecimal
+        dto.setSsb(BigDecimal
         .valueOf(200.00));
         dto.setBills(BigDecimal
         .valueOf(200.00));
@@ -61,9 +61,7 @@ public class YearlyReportServiceTest {
         .valueOf(100.00));
         dto.setWants(BigDecimal
         .valueOf(200.00));
-        dto.setOverspent(BigDecimal
-        .valueOf(50.00));
-        dto.setSavings(BigDecimal
+        dto.setSsb(BigDecimal
         .valueOf(1900.00));
         return dto;
     }

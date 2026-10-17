@@ -21,7 +21,7 @@ public class YearlyReportController {
     @Autowired
     private YearlyReportService svc;
 
-    @GetMapping("/yearly/export")
+    @GetMapping("/export")
     @Operation(summary = "Export yearly expense records to Excel")
     public ResponseEntity <InputStreamResource> exportYearlyRecords () {
         /**Generate Excel file from report service

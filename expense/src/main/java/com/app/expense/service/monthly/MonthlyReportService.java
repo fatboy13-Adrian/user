@@ -158,7 +158,6 @@ public class MonthlyReportService {
                     mdto.getWants(),
                     mdto.getOthers(),
                     mdto.getTithes(),
-                    mdto.getOverspent(),
                     mdto.getAvailable()
                 };
 

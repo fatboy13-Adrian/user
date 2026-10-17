@@ -69,7 +69,9 @@ public class YearlyReportService {
             String[] columns = {
                 "Year",
                 "Income",
-                "Savings",
+                "Emergency Fund",
+                "Srs",
+                "Ssb",
                 "Debt",
                 "Insurances",
                 "Bills",
@@ -84,7 +86,8 @@ public class YearlyReportService {
                 "Wants",
                 "Others",
                 "Tithes",
-                "Overspent"
+                "Overspent",
+                "Available"
             };
 
             //Create header row
@@ -121,7 +124,9 @@ public class YearlyReportService {
                 //Store financial values
                 BigDecimal[] values = {
                     dto.getIncome(),
-                    dto.getSavings(),
+                    dto.getEmergency(),
+                    dto.getSrs(),
+                    dto.getSsb(),
                     dto.getDebt(),
                     dto.getInsurances(),
                     dto.getBills(),
@@ -136,7 +141,7 @@ public class YearlyReportService {
                     dto.getWants(),
                     dto.getOthers(),
                     dto.getTithes(),
-                    dto.getOverspent()
+                    dto.getAvailable()
                 };
 
                 //Create financial cells

@@ -12,7 +12,9 @@ import lombok.Setter;
 public class YearlyDTO {
     private int year;
     private BigDecimal income = BigDecimal.ZERO;
-    private BigDecimal savings = BigDecimal.ZERO;
+    private BigDecimal emergency = BigDecimal.ZERO;
+    private BigDecimal srs = BigDecimal.ZERO;
+    private BigDecimal ssb = BigDecimal.ZERO;
     private BigDecimal debt = BigDecimal.ZERO;
     private BigDecimal insurances = BigDecimal.ZERO;
     private BigDecimal bills = BigDecimal.ZERO;
@@ -27,5 +29,5 @@ public class YearlyDTO {
     private BigDecimal wants = BigDecimal.ZERO;
     private BigDecimal others = BigDecimal.ZERO;
     private BigDecimal tithes = BigDecimal.ZERO;
-    private BigDecimal overspent = BigDecimal.ZERO;
+    private BigDecimal available = BigDecimal.ZERO;
 }

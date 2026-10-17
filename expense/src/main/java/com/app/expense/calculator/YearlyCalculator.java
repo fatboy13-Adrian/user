@@ -2,36 +2,18 @@ package com.app.expense.calculator;
 import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Component;
-
 import com.app.expense.dto.MonthlyDTO;
 import com.app.expense.dto.YearlyDTO;
-
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class YearlyCalculator {
-    public BigDecimal calculateSavings (YearlyDTO ydto, List <MonthlyDTO> mdto) {
-        BigDecimal savings = BigDecimal.ZERO;
-
-        for (MonthlyDTO monthly : mdto) {
-            savings = 
-            savings
-            .add(monthly
-            .getEmergency())
-            .add(monthly
-            .getSrs())
-            .add(monthly
-            .getSsb())
-            .add(monthly
-            .getAvailable());
-        }
-
-        return savings;
-    }
-
     public void calculateYearlyExpenses (YearlyDTO ydto, List <MonthlyDTO> mdto) {
         BigDecimal income = BigDecimal.ZERO;
+        BigDecimal emergency = BigDecimal.ZERO;
+        BigDecimal srs = BigDecimal.ZERO;
+        BigDecimal ssb = BigDecimal.ZERO;
         BigDecimal debt = BigDecimal.ZERO;
         BigDecimal insurances = BigDecimal.ZERO;
         BigDecimal bills = BigDecimal.ZERO;
@@ -46,12 +28,18 @@ public class YearlyCalculator {
         BigDecimal wants = BigDecimal.ZERO;
         BigDecimal others = BigDecimal.ZERO;
         BigDecimal tithes = BigDecimal.ZERO;
-        BigDecimal overspent = BigDecimal.ZERO;
+        BigDecimal available = BigDecimal.ZERO;
 
         //Sum up daily expenses for current year
         for (MonthlyDTO dto : mdto) {
             income = income
             .add(dto.getIncome());
+            emergency = emergency
+            .add(dto.getEmergency());
+            srs = srs
+            .add(dto.getSrs());
+            ssb = ssb
+            .add(dto.getSsb());
             debt = debt
             .add(dto.getDebt());
             insurances = insurances
@@ -80,12 +68,15 @@ public class YearlyCalculator {
             .add(dto.getOthers());
             tithes = tithes
             .add(dto.getTithes());
-            overspent = overspent
-            .add(dto.getOverspent());
+            available = available
+            .add(dto.getAvailable());
         }
 
         //Store calculated values into yearly expenses
         ydto.setIncome(income);
+        ydto.setEmergency(emergency);
+        ydto.setSrs(srs);
+        ydto.setSsb(ssb);
         ydto.setDebt(debt);
         ydto.setInsurances(insurances);
         ydto.setBills(bills);
@@ -100,7 +91,6 @@ public class YearlyCalculator {
         ydto.setWants(wants);
         ydto.setOthers(others);
         ydto.setTithes(tithes);
-        ydto.setOverspent(overspent);
-        ydto.setSavings(calculateSavings(ydto, mdto));
+        ydto.setAvailable(available);
     }
 }

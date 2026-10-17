@@ -30,6 +30,5 @@ public class MonthlyDTO {
     private BigDecimal wants = BigDecimal.ZERO;
     private BigDecimal others = BigDecimal.ZERO;
     private BigDecimal tithes = BigDecimal.ZERO;
-    private BigDecimal overspent = BigDecimal.ZERO;
     private BigDecimal available = BigDecimal.ZERO;
 }

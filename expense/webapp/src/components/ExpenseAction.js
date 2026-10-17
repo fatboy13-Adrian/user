@@ -8,8 +8,7 @@ disabled}) {
         <div className = "action-buttons">
             <button
                 onClick={() => onUpdate(expense)}
-                disabled = {disabled}
-            >
+                disabled = {disabled}>
                 Update
             </button>
         </div>

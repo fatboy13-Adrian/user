@@ -65,7 +65,7 @@ public class MonthlyCalculator {
             .add(e.getInternet())
             .add(e.getMortgage());
             tax = tax
-            .add(e.getIncome())
+            .add(e.getIncomeTax())
             .add(e.getPropertyTax());
             transport = transport
             .add(e.getTransport());
@@ -115,7 +115,6 @@ public class MonthlyCalculator {
         dto.setWants(wants);
         dto.setOthers(others);
         dto.setTithes(tithes);
-        dto.setOverspent(calculateOverspent(dto));
         dto.setAvailable(calculateAvailable(dto));
     }
 
@@ -138,110 +137,8 @@ public class MonthlyCalculator {
         .add(dto.getWants())
         .add(dto.getOthers())
         .add(dto.getTithes());
+        
         return dto.getIncome()
         .subtract(total);
-    }
-
-    public BigDecimal calculateOverspent (MonthlyDTO dto) {
-        BigDecimal overspent = 
-        BigDecimal.ZERO;
-
-        /*
-        These variables should be kept at a certain % of
-        take home income
-        1. Wants: 20%
-        2. Tithes: 10% */
-        BigDecimal maxWants = 
-        dto
-        .getIncome()
-        .multiply(BigDecimal
-        .valueOf(0.20));
-        BigDecimal maxTithes = 
-        dto
-        .getIncome()
-        .multiply(BigDecimal
-        .valueOf(0.10));
-
-        //Calculate overspent if year is 2026 or beyond
-        if (dto.getMonth().getYear() >= 2026) {
-            if (dto.getTransport()
-            .compareTo(BigDecimal.valueOf(122.0)) > 0) {
-                overspent = 
-                overspent
-                .add(dto
-                .getTransport()
-                .subtract(BigDecimal
-                .valueOf(122.0)));
-            }
-
-            if (dto.getFood()
-            .compareTo(BigDecimal.valueOf(500.0)) > 0) {
-                overspent = 
-                overspent
-                .add(dto
-                .getFood()
-                .subtract(BigDecimal
-                .valueOf(500.0)));
-            }
-
-            if (dto.getGroceries()
-            .compareTo(BigDecimal.valueOf(100.0)) > 0) {
-                overspent = 
-                overspent
-                .add(dto
-                .getGroceries()
-                .subtract(BigDecimal
-                .valueOf(100.0)));
-            }
-
-            if (dto.getHaircut()
-            .compareTo(BigDecimal.valueOf(15.0)) > 0) {
-                overspent =
-                overspent
-                .add(dto
-                .getHaircut()
-                .subtract(BigDecimal
-                .valueOf(15.0)));
-            }
-
-            if (dto.getHousehold()
-            .compareTo(BigDecimal.valueOf(100.0)) > 0) {
-                overspent = 
-                overspent
-                .add(dto
-                .getHousehold())
-                .subtract(BigDecimal
-                .valueOf(100.0));
-            }
-
-            if (dto.getMedical()
-            .compareTo(BigDecimal.valueOf(50.0)) > 0) {
-                overspent = 
-                overspent
-                .add(dto
-                .getMedical()
-                .subtract(BigDecimal
-                .valueOf(50.0)));
-            }
-
-            if (dto.getWants().compareTo(maxWants) > 0) {
-                overspent = 
-                overspent
-                .add(dto
-                .getWants()
-                .subtract(BigDecimal
-                .valueOf(600.0)));
-            }
-
-            if (dto.getTithes().compareTo(maxTithes) > 0) {
-                overspent = 
-                overspent
-                .add(dto
-                .getTithes()
-                .subtract(maxTithes));
-            }
-        }
-
-        return overspent;
     }
 }
