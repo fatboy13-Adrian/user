@@ -95,7 +95,7 @@ public class MonthlyCalculator {
             .add(e.getTithes());
         }
 
-        /*Populate the metrics cleanly &
+        /*Populate metrics cleanly &
         run updated calculation*/
         dto.setIncome(income);
         dto.setEmergency(emergency);

@@ -86,7 +86,6 @@ public class YearlyReportService {
                 "Wants",
                 "Others",
                 "Tithes",
-                "Overspent",
                 "Available"
             };
 

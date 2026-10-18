@@ -1,659 +1,293 @@
-import {useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import Button from "../components/Button";
-import TextField from "../components/TextField";
-import SelectDate from "../components/selections/SelectDate";
-import "../styles/ExpenseForm.css";
+import "./styles/ExpenseForm.css";
 
 const API_URL = "http://localhost:8080/expenses";
-
-/*
- * Return today's date in YYYY-MM-DD format.
- */
-const getTodayDate = () => 
-new Date()
-.toISOString()
-.slice(0, 10);
-
-/*
- * Create an empty expense object
- * Retain supplied date when resetting form.
- */
-const saveEmptyExpense = 
-(date = getTodayDate()) => ({
-    date,
-    income: "",
-
-    //Savings
-    emergency: "",
-    srs: "",
-    ssb: "",
-
-    //Debt
-    debt: "",
-
-    //Insurances
-    primeLife: "",
-    criticare: "",
-    termProtector: "",
-
-    //Bills
-    electricity: "",
-    internet: "",
-    mobile: "",
-    mortgage: "",
-
-    //Tax
-    incomeTax: "",
-    propertyTax: "",
-
-    //Everyday spending
-    parentsAllowances: "",
-    transport: "",
-    food: "",
-    groceries: "",
-    haircut: "",
-    household: "",
-    medical: "",
-
-    //Wants
-    eatingOut: "",
-    holiday: "",
-    recreational: "",
-    shopping: "",
-    sports: "",
-    tech: "",
-
-    //Others & tithes
-    wake: "",
-    wedding: "",
-    tithes: "",
-});
-
-/*
- * Define expense fields in groups
- * This configuration is reused when rendering form
- * & converting numerical fields for backend.
- */
-const EXPENSE_GROUPS = [
+const expenseFields = [
     {
         title: "Savings",
         fields: [
-            {
-                name: "emergency",
-                label: "Emergency Fund",
-                type: "number",
-            },
-            {
-                name: "srs",
-                label: "SRS",
-                type: "number",
-            },
-            {
-                name: "ssb",
-                label: "SSB",
-                type: "number",
-            },
-        ],
+            {name: "emergency", label: "Emergency"},
+            {name: "srs", label: "SRS"},
+            {name: "ssb", label: "SSB"}
+        ]
     },
-
-    {
-        title: "Debt",
-        fields: [
-            {
-                name: "debt",
-                label: "Debt",
-                type: "number",
-            },
-        ],
-    },
-
     {
         title: "Insurances",
         fields: [
-            {
-                name: "primeLife",
-                label: "Prime Life",
-                type: "number",
-            },
-            {
-                name: "criticare",
-                label: "Critical Care",
-                type: "number",
-            },
-            {
-                name: "termProtector",
-                label: "Term Protector",
-                type: "number",
-            },
-        ],
+            {name: "primeLife", label: "AIA Prime Life"},
+            {name: "criticare", label: "HSBC CritiCare"},
+            {name: "termProtector", label: "HSBC Term"}
+        ]
     },
-
     {
-        title: "Bills",
+        title: "Bills & Housing",
         fields: [
-            {
-                name: "electricity",
-                label: "Electricity",
-                type: "number",
-            },
-            {
-                name: "internet",
-                label: "Internet",
-                type: "number",
-            },
-            {
-                name: "mobile",
-                label: "Mobile",
-                type: "number",
-            },
-            {
-                name: "mortgage",
-                label: "Mortgage",
-                type: "number",
-            },
-        ],
+            {name: "electricity", label: "Electricity"},
+            {name: "internet", label: "Internet"},
+            {name: "mobile", label: "Mobile"},
+            {name: "mortgage", label: "Mortgage"}
+        ]
     },
-
     {
         title: "Tax",
         fields: [
-            {
-                name: "incomeTax",
-                label: "Income Tax",
-                type: "number",
-            },
-            {
-                name: "propertyTax",
-                label: "Property Tax",
-                type: "number",
-            },
-        ],
+            {name: "incomeTax", label: "Income Tax"},
+            {name: "propertyTax", label: "Property Tax"}
+        ]
     },
-
     {
-        title: "Everyday Spending",
+        title: "Everyday Expenses",
         fields: [
-            {
-                name: "parentsAllowances",
-                label: "Parent's Allowances",
-                type: "number",
-            },
-            {
-                name: "transport",
-                label: "Transport",
-                type: "number",
-            },
-            {
-                name: "food",
-                label: "Food",
-                type: "number",
-            },
-            {
-                name: "groceries",
-                label: "Groceries",
-                type: "number",
-            },
-            {
-                name: "haircut",
-                label: "Haircut",
-                type: "number",
-            },
-            {
-                name: "household",
-                label: "Household",
-                type: "number",
-            },
-            {
-                name: "medical",
-                label: "Medical",
-                type: "number",
-            },
-        ],
+            {name: "parentsAllowances", label: "For Parents"},
+            {name: "transport", label: "Transport"},
+            {name: "food", label: "Food"},
+            {name: "groceries", label: "Groceries"},
+            {name: "haircut", label: "Haircut"},
+            {name: "household", label: "Household"},
+            {name: "medical", label: "Medical"}
+        ]
     },
-
     {
         title: "Wants",
         fields: [
-            {
-                name: "eatingOut",
-                label: "Eating Out",
-                type: "number",
-            },
-            {
-                name: "holiday",
-                label: "Holiday",
-                type: "number",
-            },
-            {
-                name: "recreational",
-                label: "Recreational",
-                type: "number",
-            },
-            {
-                name: "shopping",
-                label: "Shopping",
-                type: "number",
-            },
-            {
-                name: "sports",
-                label: "Sports",
-                type: "number",
-            },
-            {
-                name: "tech",
-                label: "Tech",
-                type: "number",
-            },
-        ],
+            {name: "eatingOut", label: "Eating Out"},
+            {name: "holiday", label: "Holiday"},
+            {name: "recreational", label: "Recreational"},
+            {name: "shopping", label: "Shopping"},
+            {name: "sports", label: "Sports"},
+            {name: "tech", label: "Tech"}
+        ]
     },
-
     {
-        title: "Others & Tithes",
+        title: "Others",
         fields: [
-            {
-                name: "wake",
-                label: "Wake",
-                type: "number",
-            },
-            {
-                name: "wedding",
-                label: "Wedding",
-                type: "number",
-            },
-            {
-                name: "tithes",
-                label: "Tithes",
-                type: "number",
-            },
-        ],
-    },
-];
-
-/*
- * Collect all numerical field names.
- * Income is handled separately because it is not part
- * of the expense category groups.
- */
-const NUMERIC_FIELDS = [
-    "income",
-    ...EXPENSE_GROUPS.flatMap((group) =>
-        group.fields.map((field) => field.name)
-    ),
-];
-
-/*
- * Convert a field value to a number.
- * Empty or invalid values default to zero.
- */
-const toNumberOrZero = 
-(value) => {
-    if (
-        value === "" ||
-        value === null ||
-        value === undefined
-    ) {
-        return 0;
+            {name: "wake", label: "Wake"},
+            {name: "wedding", label: "Wedding"},
+            {name: "tithes", label: "Tithes"}
+        ]
     }
+];
 
-    const number = 
-    Number(value);
-    return Number
-    .isFinite(number) 
-    ? number : 0;
-};
+const numericFields = [
+    "income",
+    ...expenseFields.flatMap((section) =>
+    section.fields.map((field) => 
+    field.name)
+    )
+];
+
+function getToday() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1)
+    .padStart(2, "0");
+    const day = String(today.getDate())
+    .padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function saveEmptyExpense(date = getToday()) {
+    const expense = 
+    {date, income: "0"};
+    numericFields.forEach((field) => {
+        if (field !== "income") 
+        expense[field] = "0";
+   });
+    return expense;
+}
 
 export default function ExpenseForm() {
     const navigate = useNavigate();
-
-    /*
-     * Form modes:
-     * save   = create a new expense
-     * update = update an existing expense
-     */
-    const [mode, setMode] = 
-    useState("save");
     const [expense, setExpense] = 
-    useState(() => createEmptyExpense());
+    useState(() => saveEmptyExpense());
+    const [mode, setMode] = 
+    useState("new");
+    const [loading, setLoading] = 
+    useState(false);
+    const [saving, setSaving] = 
+    useState(false);
+    const [error, setError] = 
+    useState("");
+    const [success, setSuccess] = 
+    useState("");
+    const justSaved = useRef(false);
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+    useEffect(() => {
+        if (!expense.date) return;
+        if (justSaved.current) {
+            justSaved.current = false;
+            return;
+       }
 
-    /*
-     * Clear error & success messages.
-     */
-    const clearMessages = () => {
+        let cancelled = false;
+        const loadExpense = async () => {
+            setLoading(true);
+            setError("");
+            setSuccess("");
+            try {
+                const response = 
+                await axios
+                .get(`${API_URL}/date/${expense.date}`);
+                if (cancelled) return;
+                const data = response.data;
+                const loadedExpense = 
+                saveEmptyExpense(data.date);
+                numericFields.forEach((field) => {
+                    loadedExpense[field] = 
+                    data[field] == null ? "0" : 
+                    String(data[field]);
+               });
+                setExpense(loadedExpense);
+                setMode("edit");
+           } catch (err) {
+                if (cancelled) return;
+                if (err.response?.status === 404) {
+                    setExpense((current) => ({
+                    ...saveEmptyExpense(current.date)}));
+                    setMode("new");
+               } else {
+                    setError("Failed to retrieve the expense record.");
+               }
+           } finally {
+                if (!cancelled) 
+                setLoading(false);
+           }
+       };
+
+        loadExpense();
+        return () => 
+        {cancelled = true;};
+   }, [expense.date]);
+
+    const handleDateChange = (event) => {
+        const date = event.target.value;
+        justSaved.current = false;
+        setExpense(saveEmptyExpense(date));
+        setMode("new");
         setError("");
         setSuccess("");
-    };
+   };
 
-    /*
-     * Handle changes to form fields.
-     */
-    const handleInputChange = 
-    ({target: {name, value} }) => {
-        setExpense((currentExpense) => 
-        ({
-            ...currentExpense,
-            [name]: value,
-        }));
+    const handleChange = (event) => {
+        const {name, value} = 
+        event.target;
+        setExpense((current) => 
+        ({...current, [name]: value}));
+        setError("");
+        setSuccess("");
+   };
 
-        /*
-         * Changing date means user must
-         * load record again before editing.
-         */
-        if (name === "date") {
-            setMode("save");
-            clearMessages();
-        }
-    };
-
-    /*
-     * Build request payload for backend.
-     */
-    const buildPayload = () => ({
-        ...expense,
-        ...Object.fromEntries(
-            NUMERIC_FIELDS
-            .map((fieldName) => [
-                fieldName,
-                toNumberOrZero(expense[fieldName]),
-            ])
-        ),
-
-        date: expense
-        .date.slice(0, 10),
-    });
-
-    /*
-     * Retrieve an expense using selected date.
-     * If a record exists: Switch to edit mode.
-     * If no record exists: Switch to save mode.
-     */
-    const handleLoadRecord = async () => {
-        if (!expense.date) {
-            setError("Please select a date.");
-            setSuccess("");
-            return;
-        }
-
-        const selectedDate = 
-        expense.date.slice(0, 10);
-        setLoading(true);
-        clearMessages();
-
-        try {
-            const response = 
-            await axios.get(
-            `${API_URL}/date/${selectedDate}`);
-
-            const record =
-            Array.isArray(response.data)
-            ? response.data[0]
-            : response.data;
-
-            /*
-             * No matching record was returned.
-             */
-            if (!record) {
-                setMode("save");
-                setExpense(
-                saveEmptyExpense(selectedDate));
-                setError(
-                "No record exists for this date. " +
-                "You can create a new record.");
-                return;
-            }
-
-            /*
-             * An existing record was found.
-             */
-            setExpense({
-            ...saveEmptyExpense(selectedDate),
-            ...record,
-            date: selectedDate,
-            });
-
-            setMode("edit");
-            setSuccess("Existing expense record loaded.");
-        } catch (requestError) {
-            /*
-             * HTTP 404 means no record exists.
-             */
-            if (requestError.response?.status === 404) {
-                setMode("save");
-                setExpense(saveEmptyExpense(selectedDate));
-                setError(
-                "No record exists for this date. " +
-                "You can create a new record.");
-            } else {
-                setError(
-                requestError.response?.data?.message ||
-                "Unable to retrieve expense record.");
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    /*
-     * Save a new expense or edit an existing one.
-     */
-    const handleSubmit = 
-    async (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        setError("");
+        setSuccess("");
         if (!expense.date) {
-            setError("Please select a date.");
-            setSuccess("");
+            setError("Please select an expense date.");
             return;
-        }
+       }
 
-        setLoading(true);
-        clearMessages();
+        for (const field of numericFields) {
+            const value = expense[field];
+            if (value === "" || value === null || 
+            value === undefined || 
+            !Number.isFinite(Number(value)) || 
+            Number(value) < 0) {
+                setError(`Please enter a valid amount for 
+                ${field === "income" ? "Income" : field.replaceAll("_", " ")}.`);
+                return;
+           }
+       }
+
+        const payload = {date: expense.date};
+        numericFields.forEach((field) => 
+        {payload[field] = Number(expense[field]);});
+        setSaving(true);
+        justSaved.current = true;
+
         try {
-            const payload = 
-            buildPayload();
-
-            /*
-             * Save
-             */
-            if (mode === "save") {
-                await axios.post(
-                `${API_URL}/save`,
-                payload);
-
-                setSuccess(
-                "Expense record created successfully.");
-
-                /*
-                 * Subsequent submissions will update
-                 * this record rather than create it again.
-                 */
-                setMode("edit");
-            }
-
-            /*
-             * Edit
-             */
-            else {
-                await axios.put(
-                `${API_URL}/date/${payload.date}`,
-                payload);
-                setSuccess(
-                "Expense record updated successfully.");
-            }
-        } catch (requestError) {
-            /*
-             * Handle a duplicate record when saving.
-             */
-            if (mode === "save" &&
-            requestError.response?.status === 409) {
-                setError(
-                "A record already exists for this date. " +
-                "Click Load Record to update it.");
-            } else {
-                setError(
-                requestError.response?.data?.message ||
-                requestError.message ||
-                `Failed to ${
-                    mode === "save" ? "create" : "update"
-                } expense record.`
-                );
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    /*
-     * Discard current form & return to
-     * daily expense dashboard.
-     */
-    const handleDiscard = 
-    () => {
-        navigate("/dailyExpenses/retrieve");
-    };
-
-    /*
-     * Navigate to home page.
-     */
-    const handleHome = 
-    () => {
-        navigate("/home");
-    };
+            await axios.post(`${API_URL}/save`, payload);
+            setSuccess("Expense record saved successfully.");
+            navigate("/expenses/dates");
+       } catch (err) {
+            justSaved.current = false;
+            setError(err.response?.data?.message || 
+            "Failed to save the expense record.");
+       } finally {
+            setSaving(false);
+       }
+   };
 
     return (
-        <main className = "expense-page container-centered">
-            <section className = "form-wrapper">
-                <h2 className = "expense-form-title">
-                    {mode === "save"
-                    ? "Save New Expense Record"
-                    : "Edit Existing Expense Record"}
+        <div className = "container-centered">
+            <div className = "form-wrapper">
+                <h2 className = "text-center">
+                    {mode === "new" ? 
+                    "New Daily Expense Record" : 
+                    "Edit Existing Expense Record"}
                 </h2>
+                
+                {error && <div className = "alert alert-danger" 
+                role = "alert">{error}</div>}
+                {success && <div className = 
+                "alert alert-success">{success}</div>}
+                {loading && <div className = 
+                "alert alert-info">Loading...</div>}
 
-                {/* Error message */}
-                {error && (
-                    <div
-                    className="alert alert-danger"
-                    role="alert">
-                        {error}
-                    </div>
-                )}
-
-                {/* Success message */}
-                {success && (
-                    <div
-                    className="alert alert-success"
-                    role="status">
-                        {success}
-                    </div>
-                )}
-
-                {/* Date selection & record loading */}
-                <div className = "date-row">
-                    <SelectDate
-                        name = "date"
-                        value = {expense.date}
-                        onChange = {handleInputChange}
-                        disabled = {loading}/>
-
-                    <Button
-                        type = "button"
-                        onClick = {handleLoadRecord}
-                        disabled = {loading}>
-                        {loading
-                        ? "Loading..."
-                        : "Load Record"}
-                    </Button>
-                </div>
-
-                {/* Current form mode */}
-                <div className = "alert alert-info">
-                    {mode === "save"
-                        ? "Save mode — enter your expenses & click Save."
-                        : `Edit mode — record loaded for ${expense.date}.`}
-                </div>
-
-                <form
-                    onSubmit = {handleSubmit}
-                    noValidate>
-                    {/*Income*/}
-                    <div className = "expense-field">
-                        <TextField
-                            name = "income"
-                            label = "Income"
-                            type = "number"
-                            value = {expense.income}
-                            onChange = {handleInputChange}
-                            disabled = {loading}
-                            className = "mb-3 full-width"/>
+                <form onSubmit = {handleSubmit}>
+                    <div className = "date-row">
+                        <div className = "expenseForm-group">
+                            <label>Date</label>
+                            <input type = "date" value = {expense.date} 
+                            onChange = {handleDateChange} disabled = {saving}/>
+                        </div>
+                        <div className = "expenseForm-group">
+                            <label>Income</label>
+                            <input type="number" name="income" 
+                            value = {expense.income} 
+                            onChange = {handleChange} 
+                            step = "0.01" disabled = {saving}/>
+                        </div>
+                        <div className = "expenseForm-group">
+                            <label>Debt</label>
+                            <input type = "number" name = "debt" 
+                            value = {expense.debt} onChange = {handleChange} 
+                            step = "0.01" disabled = {saving}/>
+                        </div>
                     </div>
 
-                    {/*Expense categories*/}
-                    {EXPENSE_GROUPS.map((group) => {
-                        const groupId = `group-${group.title
-                        .toLowerCase()
-                        .replace(/[^a-z0-9]+/g, "-")}`;
+                    {expenseFields.map((section) => (
+                        <div key = {section.title} className="mb-3">
+                            <h3>{section.title}</h3>
+                            <div className = "field-group-container">
+                                {section.fields.map((field) => (
+                                    <div key = {field.name} className =
+                                    "expenseForm-group">
+                                        <label>{field.label}</label>
+                                        <input type = "number" name = {field.name} 
+                                        value = {expense[field.name] || "0"} 
+                                        onChange = {handleChange} step = "0.01" 
+                                        disabled = {saving}/>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
 
-                        return (
-                            <section
-                                key = {group.title}
-                                className = "expense-group"
-                                aria-labelledby={groupId}>
-                                <h3 id = {groupId}>
-                                    {group.title}
-                                </h3>
-
-                                <div className = "field-group-container">
-                                    {group.fields.map((field) => (
-                                        <TextField
-                                            key = {field.name}
-                                            name = {field.name}
-                                            label = {field.label}
-                                            type = {field.type}
-                                            value = {
-                                                expense[field.name] ?? ""
-                                            }
-                                            onChange = {handleInputChange}
-                                            disabled = {loading}
-                                            className = "mb-3 full-width"
-                                        />
-                                    ))}
-                                </div>
-                            </section>
-                        );
-                    })}
-
-                    {/*Form actions*/}
                     <div className = "button-wrapper">
-                        <Button
-                            type = "submit"
-                            disabled = {loading}>
-                            {loading
-                            ? "Saving..."
-                            : mode === "save"
-                            ? "Save"
-                            : "Update"}
-                        </Button>
-
-                        <Button
-                            type = "button"
-                            onClick = {handleDiscard}
-                            disabled = {loading}>
-                            Discard
-                        </Button>
-
-                        <Button
-                            type = "button"
-                            onClick = {handleHome}
-                            disabled = {loading}>
-                            Home
-                        </Button>
+                        <button type = "submit" 
+                        disabled = {saving || loading} 
+                        className = "btn-save">
+                            {saving ? "Saving..." : "Save"}
+                        </button>
+                        <button type = "button" onClick = {() => navigate("/expenses/dates")} 
+                        disabled = {saving} className = "btn-cancel">
+                            Cancel
+                        </button>
                     </div>
                 </form>
-            </section>
-        </main>
+            </div>
+        </div>
     );
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.expense.dto.ExpenseDTO;
 import com.app.expense.service.daily.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController

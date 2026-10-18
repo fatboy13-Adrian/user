@@ -103,7 +103,6 @@ public class MonthlyReportService {
                 "Wants",
                 "Others",
                 "Tithes",
-                "Overspent",
                 "Available"
             };
 
